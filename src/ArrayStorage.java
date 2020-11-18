@@ -1,30 +1,77 @@
+import java.util.Arrays;
+
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    Resume[] storage = new Resume[10000];
+    private Resume[] storage;
+    private int cursor = 0;
+    private static final int DEFAULT_QUANTITY_RESUME = 10000;
 
-    void clear() {
+    public ArrayStorage() {
+        this(new Resume[DEFAULT_QUANTITY_RESUME]);
     }
 
-    void save(Resume r) {
+    public ArrayStorage(Resume[] storage) {
+        this.storage = storage;
     }
 
-    Resume get(String uuid) {
-        return null;
+
+    public void clear() {
+        storage = new Resume[DEFAULT_QUANTITY_RESUME];
+        cursor = 0;
     }
 
-    void delete(String uuid) {
+    public void save(Resume r) {
+        if (r == null) {
+            throw new IllegalArgumentException("The value cannot be null");
+        }
+        storage[cursor++] = r;
+    }
+
+    public Resume get(String uuid) {
+        Resume foundResume = null;
+        int index;
+        if ((index = getObjectIndex(uuid)) != -1) {
+            foundResume = storage[index];
+        }
+
+        return foundResume;
+    }
+
+    public void delete(String uuid) {
+        int index;
+        if ((index = getObjectIndex(uuid)) != -1) {
+            delete(index);
+        }
+    }
+
+    public void delete(int index) {
+        if (index >= cursor && index < 0)
+            throw new IndexOutOfBoundsException("Invalid index");
+        System.arraycopy(storage, index + 1, storage, index, cursor - index - 1);
+
+        storage[--cursor] = null;
+    }
+
+    private int getObjectIndex(String uuid) {
+
+        for (int index = 0; index < cursor; index++) {
+            if (storage[index].toString().equals(uuid)) {
+                return index;
+            }
+        }
+        return -1;
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    Resume[] getAll() {
-        return new Resume[0];
+    public Resume[] getAll() {
+        return Arrays.copyOf(storage, cursor);
     }
 
-    int size() {
-        return 0;
+    public int size() {
+        return cursor;
     }
 }
