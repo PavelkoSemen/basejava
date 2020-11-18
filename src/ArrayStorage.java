@@ -4,7 +4,7 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage;
+    private final Resume[] storage;
     private int cursor = 0;
     private static final int DEFAULT_QUANTITY_RESUME = 10000;
 
@@ -18,7 +18,9 @@ public class ArrayStorage {
 
 
     public void clear() {
-        storage = new Resume[DEFAULT_QUANTITY_RESUME];
+        for (int i = 0; i < cursor; i++) {
+            storage[cursor] = null;
+        }
         cursor = 0;
     }
 
