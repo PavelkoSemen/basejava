@@ -5,18 +5,13 @@ import java.util.Arrays;
  */
 public class ArrayStorage {
     private final Resume[] storage;
+    private static final int CAPACITY = 10000;
     private int cursor = 0;
-    private static final int DEFAULT_QUANTITY_RESUME = 10000;
 
     public ArrayStorage() {
-        this(new Resume[DEFAULT_QUANTITY_RESUME]);
+        this.storage = new Resume[CAPACITY];
     }
-
-    public ArrayStorage(Resume[] storage) {
-        this.storage = storage;
-    }
-
-
+    
     public void clear() {
         for (int i = 0; i < cursor; i++) {
             storage[cursor] = null;
@@ -34,7 +29,7 @@ public class ArrayStorage {
     public Resume get(String uuid) {
         Resume foundResume = null;
         int index;
-        if ((index = getObjectIndex(uuid)) != -1) {
+        if ((index = getIndex(uuid)) != -1) {
             foundResume = storage[index];
         }
 
@@ -43,21 +38,15 @@ public class ArrayStorage {
 
     public void delete(String uuid) {
         int index;
-        if ((index = getObjectIndex(uuid)) != -1) {
-            delete(index);
+        if ((index = getIndex(uuid)) == -1) {
+            return;
         }
-    }
-
-    public void delete(int index) {
-        if (index >= cursor && index < 0)
-            throw new IndexOutOfBoundsException("Invalid index");
         System.arraycopy(storage, index + 1, storage, index, cursor - index - 1);
 
         storage[--cursor] = null;
     }
 
-    private int getObjectIndex(String uuid) {
-
+    private int getIndex(String uuid) {
         for (int index = 0; index < cursor; index++) {
             if (storage[index].toString().equals(uuid)) {
                 return index;
